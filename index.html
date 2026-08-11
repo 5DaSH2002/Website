@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohamed Hassan | Portfolio</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Cyber Interactive Grid Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Header / Navbar -->
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home" class="click-sound">Home</a></li>
+                <li><a href="#about" class="click-sound">About</a></li>
+                <li><a href="#skills" class="click-sound">Skills</a></li>
+                <li><a href="#game" class="click-sound">Game</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home">
+        <h3 class="welcome-title">WELCOME TO MY WORLD</h3>
+        <div class="typewriter-container">
+            <span class="typewriter-text" id="typewriter"></span>
+        </div>
+
+        <!-- Social Links (Centered With Itch.io) -->
+        <div class="social-links">
+            <a href="https://www.facebook.com/share/1KZ4ZWgAuE/" target="_blank" class="social-icon click-sound" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/5_d_a_s_h1?igsh=bGYydzZreGdnZmht" target="_blank" class="social-icon click-sound" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@5_d_a_s_h?_r=1&_t=ZS-98n8G9mX8jf" target="_blank" class="social-icon click-sound" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://t.me/Mo_5DaSH" target="_blank" class="social-icon click-sound" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://5dash.itch.io/" target="_blank" class="social-icon click-sound" aria-label="Itch.io"><i class="fab fa-itch-io"></i></a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-card">
+            My name is <span>Mohamed</span>, and I am newly starting in this field. God willing, I will continue to develop my skills and create many useful projects in the future.
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="skills-grid">
+            <div class="skill-card glow-effect">
+                <i class="fab fa-html5"></i>
+                <h3>HTML</h3>
+            </div>
+            <div class="skill-card glow-effect">
+                <i class="fab fa-css3-alt"></i>
+                <h3>CSS</h3>
+            </div>
+            <div class="skill-card glow-effect">
+                <i class="fab fa-js-square"></i>
+                <h3>JavaScript</h3>
+            </div>
+            <div class="skill-card glow-effect">
+                <i class="fab fa-python"></i>
+                <h3>Python</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Section -->
+    <section id="game">
+        <h2 class="section-title">Featured Game</h2>
+        <div class="single-game-container">
+            <div class="game-card glow-effect">
+                <div class="game-info">
+                    <h3 class="game-title">TRON Game</h3>
+                    <p class="game-desc">My very first developed game! An interactive classic arcade experience built with modern mechanics and high performance.</p>
+                </div>
+                <a href="https://5dash2002.github.io/Tron/" target="_blank" class="btn click-sound">Play Game <i class="fas fa-gamepad"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -333,4 +333,11 @@ section {
         height: 48px;
         font-size: 1.2rem;
     }
+    .single-game-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .game-card {
+        max-width: 100%;
+    }
 }

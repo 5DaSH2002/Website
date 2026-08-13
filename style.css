@@ -255,6 +255,8 @@ section {
 .single-game-container {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
     width: 100%;
 }
 
@@ -263,7 +265,7 @@ section {
     border: 1px solid rgba(0, 255, 204, 0.25);
     border-radius: 16px;
     padding: 2.5rem;
-    max-width: 650px;
+    max-width: 400px;
     width: 100%;
     display: flex;
     flex-direction: column;

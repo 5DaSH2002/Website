@@ -1,4 +1,10 @@
-// Interactive Cyber Grid Background Canvas
+// ============================================================
+//  IC0NIC Portfolio — VIP interactions
+// ============================================================
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ============ Interactive Cyber Grid Background Canvas ============
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
 
@@ -31,6 +37,8 @@ class Particle {
         this.size = Math.random() * 2 + 1;
         this.speedX = (Math.random() - 0.5) * 1.5;
         this.speedY = (Math.random() - 0.5) * 1.5;
+        // A few particles glow gold for the VIP accent
+        this.gold = Math.random() > 0.82;
     }
 
     update() {
@@ -39,10 +47,22 @@ class Particle {
 
         if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
         if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+        // Gentle repulsion from the cursor
+        if (mouse.x !== null) {
+            const dx = this.x - mouse.x;
+            const dy = this.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < mouse.radius && dist > 0) {
+                const force = (mouse.radius - dist) / mouse.radius;
+                this.x += (dx / dist) * force * 1.2;
+                this.y += (dy / dist) * force * 1.2;
+            }
+        }
     }
 
     draw() {
-        ctx.fillStyle = '#00ffcc';
+        ctx.fillStyle = this.gold ? '#ffd54a' : '#00ffcc';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -65,7 +85,10 @@ function connectParticles() {
 
             if (distance < 120) {
                 let opacity = 1 - (distance / 120);
-                ctx.strokeStyle = `rgba(0, 255, 204, ${opacity * 0.25})`;
+                const goldLink = particlesArray[a].gold || particlesArray[b].gold;
+                ctx.strokeStyle = goldLink
+                    ? `rgba(255, 213, 74, ${opacity * 0.22})`
+                    : `rgba(0, 255, 204, ${opacity * 0.25})`;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
@@ -89,150 +112,13 @@ function animateCanvas() {
 initParticles();
 animateCanvas();
 
-// Chains connecting each of the 3 atom electrons to a mask
-(function () {
-    const svgNS = 'http://www.w3.org/2000/svg';
-    const LINKS_PER_CHAIN = 10;
-
-    // Electron positions in the atom's own 0-100 viewBox (matches the SVG markup)
-    const ELECTRONS = [
-        { x: 29, y: 86.37 },
-        { x: 71, y: 86.37 },
-        { x: 92, y: 50 }
-    ];
-
-    function ensureDefs(svg) {
-        const defs = document.createElementNS(svgNS, 'defs');
-        const grad = document.createElementNS(svgNS, 'linearGradient');
-        grad.setAttribute('id', 'chainGradient');
-        grad.setAttribute('x1', '0%');
-        grad.setAttribute('y1', '0%');
-        grad.setAttribute('x2', '100%');
-        grad.setAttribute('y2', '100%');
-        const stops = [
-            { offset: '0%', color: '#eafff2' },
-            { offset: '45%', color: '#00ff66' },
-            { offset: '100%', color: '#0a4d29' }
-        ];
-        stops.forEach(s => {
-            const stop = document.createElementNS(svgNS, 'stop');
-            stop.setAttribute('offset', s.offset);
-            stop.setAttribute('stop-color', s.color);
-            grad.appendChild(stop);
-        });
-        defs.appendChild(grad);
-        svg.appendChild(defs);
-    }
-
-    function buildChains() {
-        const scene = document.querySelector('.hacker-scene');
-        const atom = document.querySelector('.atom-wrap');
-        const svg = document.getElementById('chainsSvg');
-        if (!scene || !atom || !svg) return;
-
-        const sceneRect = scene.getBoundingClientRect();
-        svg.setAttribute('width', sceneRect.width);
-        svg.setAttribute('height', sceneRect.height);
-        svg.innerHTML = '';
-        ensureDefs(svg);
-
-        const atomRect = atom.getBoundingClientRect();
-
-        // Sort masks left-to-right and electrons left-to-right so each electron feeds the nearest mask
-        const targets = [
-            document.querySelector('.hacker-mask-container.left-mask'),
-            document.querySelector('.hacker-mask-container.center-mask'),
-            document.querySelector('.hacker-mask-container.right-mask')
-        ];
-        const electronsSorted = [...ELECTRONS].sort((a, b) => a.x - b.x);
-
-        targets.forEach((maskEl, chainIndex) => {
-            if (!maskEl) return;
-            const e = electronsSorted[chainIndex];
-            const startX = atomRect.left + (e.x / 100) * atomRect.width - sceneRect.left;
-            const startY = atomRect.top + (e.y / 100) * atomRect.height - sceneRect.top;
-
-            const r = maskEl.getBoundingClientRect();
-            const mx = r.left + r.width / 2 - sceneRect.left;
-            const my = r.top - sceneRect.top + 6;
-            const midY = (startY + my) / 2;
-
-            const d = `M ${startX} ${startY} C ${startX} ${midY}, ${mx} ${midY}, ${mx} ${my}`;
-
-            // Thin guide line (the chain's inner cable)
-            const line = document.createElementNS(svgNS, 'path');
-            line.setAttribute('class', 'chain-line');
-            line.setAttribute('id', `chainPath${chainIndex}`);
-            line.setAttribute('d', d);
-            svg.appendChild(line);
-
-            const len = line.getTotalLength();
-
-            // Interlocking oval links following the path's direction
-            for (let i = 1; i <= LINKS_PER_CHAIN; i++) {
-                const dist = (len / (LINKS_PER_CHAIN + 1)) * i;
-                const pt = line.getPointAtLength(dist);
-                const ptNext = line.getPointAtLength(Math.min(len, dist + 1));
-                const angle = Math.atan2(ptNext.y - pt.y, ptNext.x - pt.x) * (180 / Math.PI);
-                const alternate = i % 2 === 0 ? 90 : 0;
-
-                const link = document.createElementNS(svgNS, 'ellipse');
-                link.setAttribute('class', 'chain-link');
-                link.setAttribute('cx', pt.x);
-                link.setAttribute('cy', pt.y);
-                link.setAttribute('rx', 3.6);
-                link.setAttribute('ry', 2.1);
-                link.setAttribute('transform', `rotate(${angle + alternate} ${pt.x} ${pt.y})`);
-                svg.appendChild(link);
-
-                const delay = chainIndex * 200 + i * 70;
-                setTimeout(() => link.classList.add('show'), delay);
-            }
-
-            // Spark where the chain first meets the mask
-            const spark = document.createElementNS(svgNS, 'circle');
-            spark.setAttribute('class', 'chain-spark');
-            spark.setAttribute('cx', mx);
-            spark.setAttribute('cy', my);
-            spark.setAttribute('r', 2);
-            svg.appendChild(spark);
-            const sparkDelay = chainIndex * 200 + (LINKS_PER_CHAIN + 1) * 70;
-            setTimeout(() => spark.classList.add('show'), sparkDelay);
-
-            // Continuous traveling pulse: radiance flowing from the electron down to the mask
-            const pulse = document.createElementNS(svgNS, 'circle');
-            pulse.setAttribute('class', 'chain-pulse');
-            pulse.setAttribute('r', 2.6);
-            const motion = document.createElementNS(svgNS, 'animateMotion');
-            motion.setAttribute('dur', '2.1s');
-            motion.setAttribute('repeatCount', 'indefinite');
-            motion.setAttribute('begin', `${(sparkDelay / 1000 + 0.3).toFixed(2)}s`);
-            motion.setAttribute('path', d);
-            pulse.appendChild(motion);
-            svg.appendChild(pulse);
-            setTimeout(() => pulse.classList.add('active'), sparkDelay);
-        });
-    }
-
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(buildChains, 200);
-    });
-
-    window.addEventListener('load', () => {
-        setTimeout(buildChains, 150);
-    });
-})();
-
-// Matrix Rain "Draw-In" Effect for the Hacker Masks (center + two flanking masks)
+// ============ Matrix Rain "Draw-In" Effect for the Hacker Masks ============
 function runMaskMatrix(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const size = canvas.width;
 
-    // Same outline as the SVG mask, used here to clip the falling code to the mask silhouette
     const maskPath = new Path2D('M20,35 C20,15 35,8 50,8 C65,8 80,15 80,35 C80,55 70,75 50,85 C30,75 20,55 20,35 Z');
 
     const chars = '01アイウエオカキクケコサシスセソ';
@@ -241,14 +127,13 @@ function runMaskMatrix(canvasId) {
     const drops = Array(columns).fill(0).map(() => Math.random() * -size / fontSize);
 
     let frame = 0;
-    const maxFrames = 46; // ~1.5s pacing via requestAnimationFrame
+    const maxFrames = 46;
 
     function drawFrame() {
         ctx.save();
         ctx.clearRect(0, 0, size, size);
         ctx.clip(maskPath, 'nonzero');
 
-        // Trail fade
         ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
         ctx.fillRect(0, 0, size, size);
 
@@ -281,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['maskMatrixLeft', 'maskMatrixCenter', 'maskMatrixRight'].forEach(runMaskMatrix);
 });
 
-// Typewriter Effect for "IC0NIC"
+// ============ Typewriter Effect for "IC0NIC" ============
 const word = "IC0NIC";
 let charIndex = 0;
 let isDeleting = false;
@@ -311,32 +196,263 @@ function typeEffect() {
 
 document.addEventListener("DOMContentLoaded", () => setTimeout(typeEffect, 800));
 
-// Enhanced Web Audio API Sound Trigger (Cyber Tech Sound Effect)
+// ============================================================
+//  VIP AUDIO ENGINE — Web Audio, click + hover + ambient
+// ============================================================
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let soundEnabled = false;         // hover + ambient (opt-in via toggle)
+let ambientNodes = null;
 
+function resumeAudio() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+// Cyber click (always plays on click — user gesture)
 function playTechClickSound() {
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-
+    resumeAudio();
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.08);
-
     gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
-
     osc.connect(gain);
     gain.connect(audioCtx.destination);
-
     osc.start();
     osc.stop(audioCtx.currentTime + 0.08);
 }
 
-document.querySelectorAll('.click-sound').forEach(element => {
-    element.addEventListener('click', playTechClickSound);
+// Subtle hover blip (only when sound enabled)
+function playHoverSound() {
+    if (!soundEnabled) return;
+    resumeAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1500, audioCtx.currentTime + 0.06);
+    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.1);
+}
+
+// Ambient cyber drone (two detuned oscillators + slow LFO)
+function startAmbient() {
+    if (ambientNodes) return;
+    resumeAudio();
+    const master = audioCtx.createGain();
+    master.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.045, audioCtx.currentTime + 2);
+    master.connect(audioCtx.destination);
+
+    const oscA = audioCtx.createOscillator();
+    oscA.type = 'sine';
+    oscA.frequency.value = 110;
+    const oscB = audioCtx.createOscillator();
+    oscB.type = 'sine';
+    oscB.frequency.value = 110.6; // slight detune -> shimmer
+
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.value = 0.08;
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 0.02;
+    lfo.connect(lfoGain);
+    lfoGain.connect(master.gain);
+
+    oscA.connect(master);
+    oscB.connect(master);
+    oscA.start();
+    oscB.start();
+    lfo.start();
+
+    ambientNodes = { master, oscA, oscB, lfo };
+}
+
+function stopAmbient() {
+    if (!ambientNodes) return;
+    const { master, oscA, oscB, lfo } = ambientNodes;
+    master.gain.cancelScheduledValues(audioCtx.currentTime);
+    master.gain.setValueAtTime(master.gain.value, audioCtx.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+    setTimeout(() => {
+        try { oscA.stop(); oscB.stop(); lfo.stop(); } catch (e) {}
+    }, 1100);
+    ambientNodes = null;
+}
+
+// Click sounds (always on)
+document.querySelectorAll('.click-sound').forEach(el => {
+    el.addEventListener('click', playTechClickSound);
 });
 
+// Hover sounds (gated by toggle)
+document.querySelectorAll('.hover-sound').forEach(el => {
+    el.addEventListener('mouseenter', playHoverSound);
+});
+
+// Sound toggle button
+const soundToggle = document.getElementById('soundToggle');
+soundToggle.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    resumeAudio();
+    const icon = soundToggle.querySelector('i');
+    if (soundEnabled) {
+        soundToggle.classList.add('on');
+        icon.className = 'fas fa-volume-high';
+        startAmbient();
+    } else {
+        soundToggle.classList.remove('on');
+        icon.className = 'fas fa-volume-xmark';
+        stopAmbient();
+    }
+});
+
+// ============================================================
+//  CURSOR SPOTLIGHT
+// ============================================================
+const spotlight = document.getElementById('spotlight');
+let spotX = window.innerWidth / 2;
+let spotY = window.innerHeight / 2;
+let curX = spotX;
+let curY = spotY;
+
+if (!prefersReducedMotion) {
+    window.addEventListener('mousemove', (e) => {
+        spotX = e.clientX;
+        spotY = e.clientY;
+        spotlight.classList.add('active');
+    });
+
+    function moveSpot() {
+        curX += (spotX - curX) * 0.12;
+        curY += (spotY - curY) * 0.12;
+        spotlight.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+        requestAnimationFrame(moveSpot);
+    }
+    moveSpot();
+}
+
+// ============================================================
+//  SCROLL PROGRESS BAR
+// ============================================================
+const scrollProgress = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    scrollProgress.style.width = `${Math.min(100, scrolled * 100)}%`;
+}, { passive: true });
+
+// ============================================================
+//  SCROLL REVEAL + SKILL BARS (IntersectionObserver)
+// ============================================================
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const delay = parseInt(entry.target.dataset.revealDelay || '0', 10);
+            setTimeout(() => entry.target.classList.add('in-view'), delay);
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ============================================================
+//  3D TILT CARDS
+// ============================================================
+if (!prefersReducedMotion && window.matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll('.tilt-card').forEach(card => {
+        const MAX = 10; // deg
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const px = (e.clientX - rect.left) / rect.width;
+            const py = (e.clientY - rect.top) / rect.height;
+            const rx = (0.5 - py) * MAX * 2;
+            const ry = (px - 0.5) * MAX * 2;
+            card.style.transform =
+                `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(6px)`;
+            const glare = card.querySelector('.tilt-glare');
+            if (glare) {
+                glare.style.setProperty('--gx', `${px * 100}%`);
+                glare.style.setProperty('--gy', `${py * 100}%`);
+            }
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform =
+                'perspective(900px) rotateX(0) rotateY(0) translateZ(0)';
+        });
+    });
+}
+
+// ============================================================
+//  ACTIVE NAV HIGHLIGHT
+// ============================================================
+const navLinks = document.querySelectorAll('.nav-links a');
+const sections = document.querySelectorAll('section[id]');
+const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+            });
+        }
+    });
+}, { threshold: 0.5 });
+
+sections.forEach(s => navObserver.observe(s));
+
+// ============================================================
+//  CINEMATIC PRELOADER
+// ============================================================
+(function () {
+    const preloader = document.getElementById('preloader');
+    const bar = document.getElementById('preloaderBar');
+    const percentEl = document.getElementById('preloaderPercent');
+    const bootEl = document.getElementById('preloaderBoot');
+    if (!preloader) return;
+
+    const bootMessages = [
+        'INITIALIZING SYSTEM',
+        'LOADING NEURAL GRID',
+        'DECRYPTING MASKS',
+        'ESTABLISHING LINK',
+        'ACCESS GRANTED'
+    ];
+
+    let progress = 0;
+    let msgIndex = 0;
+
+    const interval = setInterval(() => {
+        progress += Math.random() * 12 + 4;
+        if (progress > 100) progress = 100;
+        bar.style.width = progress + '%';
+        percentEl.textContent = Math.floor(progress);
+
+        const nextMsg = Math.min(bootMessages.length - 1, Math.floor(progress / 25));
+        if (nextMsg !== msgIndex) {
+            msgIndex = nextMsg;
+            bootEl.textContent = bootMessages[msgIndex];
+        }
+
+        if (progress >= 100) {
+            clearInterval(interval);
+            bootEl.textContent = bootMessages[bootMessages.length - 1];
+            setTimeout(() => {
+                preloader.classList.add('done');
+                // Kick off the first reveal check after preloader hides
+                document.querySelectorAll('#home .reveal').forEach(el => {
+                    if (el.getBoundingClientRect().top < window.innerHeight) {
+                        const delay = parseInt(el.dataset.revealDelay || '0', 10);
+                        setTimeout(() => el.classList.add('in-view'), delay);
+                    }
+                });
+            }, 500);
+        }
+    }, 200);
+})();

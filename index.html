@@ -3,27 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohamed Hassan | Portfolio</title>
+    <meta name="theme-color" content="#08090d">
+    <meta name="description" content="Mohamed Hassan (IC0NIC) — Cyberpunk developer portfolio. Web development, games and creative code.">
+    <title>Mohamed Hassan | IC0NIC Portfolio</title>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Cinematic Preloader -->
+    <div id="preloader" aria-hidden="true">
+        <div class="preloader-inner">
+            <div class="preloader-logo">IC0NIC</div>
+            <div class="preloader-bar-wrap">
+                <div class="preloader-bar" id="preloaderBar"></div>
+            </div>
+            <div class="preloader-status">
+                <span id="preloaderPercent">0</span><span>%</span>
+                <span class="preloader-boot" id="preloaderBoot">INITIALIZING SYSTEM</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cursor Spotlight (follows mouse) -->
+    <div id="spotlight" aria-hidden="true"></div>
+
     <!-- Cyber Interactive Grid Canvas -->
     <canvas id="bg-canvas"></canvas>
+
+    <!-- Sound Toggle (VIP control) -->
+    <button id="soundToggle" class="sound-toggle" aria-label="Toggle sound" title="Toggle sound">
+        <i class="fas fa-volume-xmark"></i>
+    </button>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scrollProgress" aria-hidden="true"></div>
 
     <!-- Header / Navbar -->
     <header>
         <nav>
             <ul class="nav-links">
-                <li><a href="#home" class="click-sound">Home</a></li>
-                <li><a href="#about" class="click-sound">About</a></li>
-                <li><a href="#skills" class="click-sound">Skills</a></li>
-                <li><a href="#game" class="click-sound">Game</a></li>
+                <li><a href="#home" class="click-sound hover-sound">Home</a></li>
+                <li><a href="#about" class="click-sound hover-sound">About</a></li>
+                <li><a href="#skills" class="click-sound hover-sound">Skills</a></li>
+                <li><a href="#game" class="click-sound hover-sound">Game</a></li>
             </ul>
         </nav>
     </header>
@@ -44,7 +73,6 @@
                     </g>
                 </svg>
             </div>
-            <svg class="chains-svg" id="chainsSvg" aria-hidden="true"></svg>
             <div class="hacker-mask-row">
                 <div class="hacker-mask-container side left-mask">
                     <canvas id="maskMatrixLeft" class="mask-matrix" width="66" height="66"></canvas>
@@ -78,58 +106,73 @@
                 </div>
             </div>
         </div>
-        <h3 class="welcome-title">WELCOME TO MY WORLD</h3>
+        <h3 class="welcome-title reveal">WELCOME TO MY WORLD</h3>
         <div class="typewriter-container">
             <span class="typewriter-text" id="typewriter"></span>
         </div>
 
         <!-- Social Links (Centered With Itch.io) -->
-        <div class="social-links">
-            <a href="https://www.facebook.com/share/1KZ4ZWgAuE/" target="_blank" class="social-icon click-sound" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/5_d_a_s_h1?igsh=bGYydzZreGdnZmht" target="_blank" class="social-icon click-sound" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@5_d_a_s_h?_r=1&_t=ZS-98n8G9mX8jf" target="_blank" class="social-icon click-sound" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-            <a href="https://t.me/Mo_5DaSH" target="_blank" class="social-icon click-sound" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
-            <a href="https://5dash.itch.io/" target="_blank" class="social-icon click-sound" aria-label="Itch.io"><i class="fab fa-itch-io"></i></a>
+        <div class="social-links reveal" data-reveal-delay="200">
+            <a href="https://www.facebook.com/share/1KZ4ZWgAuE/" target="_blank" rel="noopener" class="social-icon click-sound hover-sound" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/5_d_a_s_h1?igsh=bGYydzZreGdnZmht" target="_blank" rel="noopener" class="social-icon click-sound hover-sound" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@5_d_a_s_h?_r=1&_t=ZS-98n8G9mX8jf" target="_blank" rel="noopener" class="social-icon click-sound hover-sound" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://t.me/Mo_5DaSH" target="_blank" rel="noopener" class="social-icon click-sound hover-sound" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://5dash.itch.io/" target="_blank" rel="noopener" class="social-icon click-sound hover-sound" aria-label="Itch.io"><i class="fab fa-itch-io"></i></a>
+        </div>
+
+        <!-- Scroll hint -->
+        <div class="scroll-hint reveal" data-reveal-delay="320" aria-hidden="true">
+            <span>SCROLL</span>
+            <i class="fas fa-chevron-down"></i>
         </div>
     </section>
 
     <!-- About Section -->
     <section id="about">
-        <h2 class="section-title">About Me</h2>
-        <div class="about-card">
+        <h2 class="section-title reveal">About Me</h2>
+        <div class="about-card tilt-card glow-effect reveal" data-reveal-delay="120">
+            <div class="tilt-glare"></div>
             My name is <span>Mohamed</span>, and I am newly starting in this field. God willing, I will continue to develop my skills and create many useful projects in the future.
         </div>
     </section>
 
     <!-- Skills Section -->
     <section id="skills">
-        <h2 class="section-title">Technical Skills</h2>
+        <h2 class="section-title reveal">Technical Skills</h2>
         <div class="skills-grid">
-            <div class="skill-card glow-effect">
+            <div class="skill-card tilt-card glow-effect hover-sound reveal" data-reveal-delay="0" data-level="80">
+                <div class="tilt-glare"></div>
                 <i class="fab fa-html5"></i>
                 <h3>HTML</h3>
+                <div class="skill-bar"><span style="--level:80%"></span></div>
             </div>
-            <div class="skill-card glow-effect">
+            <div class="skill-card tilt-card glow-effect hover-sound reveal" data-reveal-delay="90" data-level="75">
+                <div class="tilt-glare"></div>
                 <i class="fab fa-css3-alt"></i>
                 <h3>CSS</h3>
+                <div class="skill-bar"><span style="--level:75%"></span></div>
             </div>
-            <div class="skill-card glow-effect">
+            <div class="skill-card tilt-card glow-effect hover-sound reveal" data-reveal-delay="180" data-level="65">
+                <div class="tilt-glare"></div>
                 <i class="fab fa-js-square"></i>
                 <h3>JavaScript</h3>
+                <div class="skill-bar"><span style="--level:65%"></span></div>
             </div>
-            <div class="skill-card glow-effect">
+            <div class="skill-card tilt-card glow-effect hover-sound reveal" data-reveal-delay="270" data-level="60">
+                <div class="tilt-glare"></div>
                 <i class="fab fa-python"></i>
                 <h3>Python</h3>
+                <div class="skill-bar"><span style="--level:60%"></span></div>
             </div>
         </div>
     </section>
 
     <!-- Game Section -->
     <section id="game">
-        <h2 class="section-title">Featured Games</h2>
+        <h2 class="section-title reveal">Featured Games</h2>
         <div class="single-game-container">
-            <a href="https://5dash2002.github.io/Tron/" target="_blank" class="btn game-btn click-sound"><i class="fas fa-gamepad"></i> TRON</a>
-            <a href="https://5dash2002.github.io/space-shooter/" target="_blank" class="btn game-btn click-sound"><i class="fas fa-gamepad"></i> SPACE SHOOTER</a>
+            <a href="https://5dash2002.github.io/Tron/" target="_blank" rel="noopener" class="btn game-btn click-sound hover-sound reveal" data-reveal-delay="0"><i class="fas fa-gamepad"></i> TRON</a>
+            <a href="https://5dash2002.github.io/space-shooter/" target="_blank" rel="noopener" class="btn game-btn click-sound hover-sound reveal" data-reveal-delay="120"><i class="fas fa-gamepad"></i> SPACE SHOOTER</a>
         </div>
     </section>
 

@@ -128,31 +128,196 @@ section {
     text-align: center;
 }
 
-.hacker-mask-container {
+.hacker-scene {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.atom-wrap {
+    position: relative;
+    z-index: 3;
+    width: 118px;
+    height: 118px;
+    margin-bottom: 90px;
+}
+
+.atom-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.atom-spin {
+    transform-origin: 50px 50px;
+}
+
+.atom-svg ellipse {
+    fill: none;
+    stroke: #00ff66;
+    stroke-width: 1.4;
+    opacity: 0.75;
+    filter: drop-shadow(0 0 4px #00ff66);
+}
+
+.atom-svg .electron {
+    fill: #ffffff;
+    filter: drop-shadow(0 0 6px #00ff66);
+}
+
+.atom-svg .nucleus {
+    fill: #00ff66;
+    filter: drop-shadow(0 0 10px #00ff66);
+    animation: nucleusPulse 1.8s ease-in-out infinite;
+}
+
+.chains-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.chain-line {
+    fill: none;
+    stroke: url(#chainGradient);
+    stroke-width: 1;
+    stroke-opacity: 0.35;
+}
+
+.chain-link {
+    fill: url(#chainGradient);
+    stroke: #073b1f;
+    stroke-width: 0.6;
+    filter: drop-shadow(0 0 3px rgba(0, 255, 102, 0.7));
+    opacity: 0;
+    transform: scale(0.4);
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.chain-link.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.chain-spark {
+    fill: #ffffff;
+    opacity: 0;
+}
+
+.chain-spark.show {
+    animation: sparkPulse 1s ease-out forwards;
+}
+
+.chain-pulse {
+    fill: #eafff2;
+    filter: drop-shadow(0 0 6px #00ff66) drop-shadow(0 0 12px #00ff66);
+    opacity: 0;
+}
+
+.chain-pulse.active {
+    opacity: 1;
+}
+
+@keyframes nucleusPulse {
+    0%, 100% { r: 6; }
+    50% { r: 7.5; }
+}
+
+@keyframes sparkPulse {
+    0% { opacity: 1; r: 2; }
+    70% { opacity: 0.5; r: 11; }
+    100% { opacity: 0; r: 15; }
+}
+
+.hacker-mask-row {
     display: flex;
     justify-content: center;
-    margin-bottom: 0.8rem;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.hacker-mask-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hacker-mask-container.center-mask {
+    width: 112px;
+    height: 112px;
+}
+
+.hacker-mask-container.side {
+    width: 66px;
+    height: 66px;
+}
+
+.hacker-mask-container.left-mask {
+    transform: rotate(10deg);
+}
+
+.hacker-mask-container.right-mask {
+    transform: rotate(-10deg);
+}
+
+.mask-matrix {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.mask-matrix.fade-out {
+    opacity: 0;
+}
+
+.hacker-mask {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.hacker-mask .mask-face {
+    fill: #000;
+    fill-opacity: 0;
+    animation: fillMask 0.01s linear 1.6s forwards;
 }
 
 .hacker-mask path {
-    fill: none;
-    stroke: var(--accent-color);
+    stroke: #00ff66;
     stroke-width: 2;
     stroke-linecap: round;
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    filter: drop-shadow(0 0 6px var(--accent-glow));
-    animation: drawMask 1.4s ease forwards;
+    filter: drop-shadow(0 0 7px #00ff66);
+    animation: drawMask 1.4s steps(18) forwards;
 }
 
-.hacker-mask path:nth-child(1) { animation-delay: 0s; }
-.hacker-mask path:nth-child(2) { animation-delay: 0.9s; animation-duration: 0.5s; }
-.hacker-mask path:nth-child(3) { animation-delay: 1s; animation-duration: 0.5s; }
-.hacker-mask path:nth-child(4) { animation-delay: 1.1s; animation-duration: 0.5s; }
-.hacker-mask path:nth-child(5) { animation-delay: 1.3s; animation-duration: 0.5s; }
+.hacker-mask path:nth-child(1) { animation-delay: 0.3s; }
+.hacker-mask path:nth-child(2) { animation-delay: 1.2s; animation-duration: 0.4s; }
+.hacker-mask path:nth-child(3) { animation-delay: 1.3s; animation-duration: 0.4s; }
+.hacker-mask path:nth-child(4) { animation-delay: 1.4s; animation-duration: 0.4s; }
+.hacker-mask path:nth-child(5) { animation-delay: 1.6s; animation-duration: 0.4s; }
 
 @keyframes drawMask {
     to { stroke-dashoffset: 0; }
+}
+
+@keyframes fillMask {
+    to { fill-opacity: 0.9; }
 }
 
 .welcome-title {
@@ -283,43 +448,13 @@ section {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: 1.5rem;
     width: 100%;
 }
 
-.game-card {
-    background: var(--card-bg);
-    border: 1px solid rgba(0, 255, 204, 0.25);
-    border-radius: 16px;
-    padding: 2.5rem;
-    max-width: 400px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: all 0.4s ease;
-    backdrop-filter: blur(10px);
-}
-
-.game-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 35px var(--accent-glow);
-    border-color: var(--accent-color);
-}
-
-.game-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.8rem;
-    color: #fff;
-    margin-bottom: 1rem;
-}
-
-.game-desc {
-    color: var(--text-muted);
-    font-size: 1rem;
-    margin-bottom: 2rem;
-    line-height: 1.7;
+.game-btn {
+    width: 240px;
+    justify-content: center;
 }
 
 .btn {
@@ -344,6 +479,10 @@ section {
     box-shadow: 0 0 20px var(--accent-glow);
 }
 
+.btn i {
+    font-size: 0.85em;
+}
+
 /* Responsiveness */
 @media (max-width: 768px) {
     .nav-links {
@@ -351,6 +490,22 @@ section {
     }
     .welcome-title {
         font-size: 1.1rem;
+    }
+    .hacker-mask-row {
+        gap: 0.3rem;
+    }
+    .atom-wrap {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 66px;
+    }
+    .hacker-mask-container.center-mask {
+        width: 88px;
+        height: 88px;
+    }
+    .hacker-mask-container.side {
+        width: 52px;
+        height: 52px;
     }
     .typewriter-container {
         font-size: 2.3rem;
@@ -364,7 +519,7 @@ section {
         flex-direction: column;
         align-items: center;
     }
-    .game-card {
-        max-width: 100%;
+    .game-btn {
+        width: 220px;
     }
 }

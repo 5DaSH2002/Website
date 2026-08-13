@@ -30,14 +30,53 @@
 
     <!-- Home Section -->
     <section id="home">
-        <div class="hacker-mask-container">
-            <svg class="hacker-mask" viewBox="0 0 100 100" width="64" height="64" aria-hidden="true">
-                <path pathLength="1" d="M20,35 C20,15 35,8 50,8 C65,8 80,15 80,35 C80,55 70,75 50,85 C30,75 20,55 20,35 Z"></path>
-                <path pathLength="1" d="M30,37 C34,32 42,32 46,37"></path>
-                <path pathLength="1" d="M54,37 C58,32 66,32 70,37"></path>
-                <path pathLength="1" d="M35,24 C40,19 60,19 65,24"></path>
-                <path pathLength="1" d="M40,55 C45,59 55,59 60,55"></path>
-            </svg>
+        <div class="hacker-scene">
+            <div class="atom-wrap">
+                <svg class="atom-svg" viewBox="0 0 100 100" aria-hidden="true">
+                    <g class="atom-spin">
+                        <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(0 50 50)"></ellipse>
+                        <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(60 50 50)"></ellipse>
+                        <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(120 50 50)"></ellipse>
+                        <circle class="electron" cx="92" cy="50" r="3.4"></circle>
+                        <circle class="electron" cx="71" cy="86.37" r="3.4"></circle>
+                        <circle class="electron" cx="29" cy="86.37" r="3.4"></circle>
+                        <circle class="nucleus" cx="50" cy="50" r="6"></circle>
+                    </g>
+                </svg>
+            </div>
+            <svg class="chains-svg" id="chainsSvg" aria-hidden="true"></svg>
+            <div class="hacker-mask-row">
+                <div class="hacker-mask-container side left-mask">
+                    <canvas id="maskMatrixLeft" class="mask-matrix" width="66" height="66"></canvas>
+                    <svg class="hacker-mask" viewBox="0 0 100 100" width="66" height="66" aria-hidden="true">
+                        <path class="mask-face" pathLength="1" d="M20,35 C20,15 35,8 50,8 C65,8 80,15 80,35 C80,55 70,75 50,85 C30,75 20,55 20,35 Z"></path>
+                        <path pathLength="1" d="M30,37 C34,32 42,32 46,37"></path>
+                        <path pathLength="1" d="M54,37 C58,32 66,32 70,37"></path>
+                        <path pathLength="1" d="M35,24 C40,19 60,19 65,24"></path>
+                        <path pathLength="1" d="M40,55 C45,59 55,59 60,55"></path>
+                    </svg>
+                </div>
+                <div class="hacker-mask-container center-mask">
+                    <canvas id="maskMatrixCenter" class="mask-matrix" width="112" height="112"></canvas>
+                    <svg class="hacker-mask" viewBox="0 0 100 100" width="112" height="112" aria-hidden="true">
+                        <path class="mask-face" pathLength="1" d="M20,35 C20,15 35,8 50,8 C65,8 80,15 80,35 C80,55 70,75 50,85 C30,75 20,55 20,35 Z"></path>
+                        <path pathLength="1" d="M30,37 C34,32 42,32 46,37"></path>
+                        <path pathLength="1" d="M54,37 C58,32 66,32 70,37"></path>
+                        <path pathLength="1" d="M35,24 C40,19 60,19 65,24"></path>
+                        <path pathLength="1" d="M40,55 C45,59 55,59 60,55"></path>
+                    </svg>
+                </div>
+                <div class="hacker-mask-container side right-mask">
+                    <canvas id="maskMatrixRight" class="mask-matrix" width="66" height="66"></canvas>
+                    <svg class="hacker-mask" viewBox="0 0 100 100" width="66" height="66" aria-hidden="true">
+                        <path class="mask-face" pathLength="1" d="M20,35 C20,15 35,8 50,8 C65,8 80,15 80,35 C80,55 70,75 50,85 C30,75 20,55 20,35 Z"></path>
+                        <path pathLength="1" d="M30,37 C34,32 42,32 46,37"></path>
+                        <path pathLength="1" d="M54,37 C58,32 66,32 70,37"></path>
+                        <path pathLength="1" d="M35,24 C40,19 60,19 65,24"></path>
+                        <path pathLength="1" d="M40,55 C45,59 55,59 60,55"></path>
+                    </svg>
+                </div>
+            </div>
         </div>
         <h3 class="welcome-title">WELCOME TO MY WORLD</h3>
         <div class="typewriter-container">
@@ -89,18 +128,8 @@
     <section id="game">
         <h2 class="section-title">Featured Games</h2>
         <div class="single-game-container">
-            <div class="game-card glow-effect">
-                <div class="game-info">
-                    <h3 class="game-title">TRON Game</h3>
-                </div>
-                <a href="https://5dash2002.github.io/Tron/" target="_blank" class="btn click-sound">Play Game <i class="fas fa-gamepad"></i></a>
-            </div>
-            <div class="game-card glow-effect">
-                <div class="game-info">
-                    <h3 class="game-title">Space Shooter</h3>
-                </div>
-                <a href="https://5dash2002.github.io/space-shooter/" target="_blank" class="btn click-sound">Play Game <i class="fas fa-gamepad"></i></a>
-            </div>
+            <a href="https://5dash2002.github.io/Tron/" target="_blank" class="btn game-btn click-sound"><i class="fas fa-gamepad"></i> TRON</a>
+            <a href="https://5dash2002.github.io/space-shooter/" target="_blank" class="btn game-btn click-sound"><i class="fas fa-gamepad"></i> SPACE SHOOTER</a>
         </div>
     </section>
 
